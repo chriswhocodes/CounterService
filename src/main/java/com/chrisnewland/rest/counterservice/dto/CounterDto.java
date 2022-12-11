@@ -24,7 +24,7 @@ public class CounterDto
 	private static final Logger logger = LoggerFactory.getLogger(CounterDto.class);
 
 	/*
-	DROP USER counter;
+	DROP USER <user>;
 	CREATE USER <user> WITH PASSWORD '<password>';
 
 	CREATE TABLE counter(
@@ -39,12 +39,13 @@ public class CounterDto
 
 	private final Connection connection;
 
-	public CounterDto() throws SQLException
+	public CounterDto(int flushIntervalMinutes) throws SQLException
 	{
+		logger.info("Database flush every {} minutes", flushIntervalMinutes);
 		this.connection = DatabaseManager.getConnection();
 
-		singleThreadExecutor.scheduleAtFixedRate(this::flushInsertQueue, 1, 1, TimeUnit.MINUTES);
-		singleThreadExecutor.scheduleAtFixedRate(this::flushDeleteQueue, 1, 1, TimeUnit.MINUTES);
+		singleThreadExecutor.scheduleAtFixedRate(this::flushInsertQueue, flushIntervalMinutes, flushIntervalMinutes, TimeUnit.MINUTES);
+		singleThreadExecutor.scheduleAtFixedRate(this::flushDeleteQueue, flushIntervalMinutes, flushIntervalMinutes, TimeUnit.MINUTES);
 	}
 
 	public void store(String group, String id, long expiry)

@@ -17,7 +17,7 @@ public class InMemoryCounter extends ConcurrentHashMap<String, IdMap>
 
 	public InMemoryCounter() throws SQLException
 	{
-		counterDto = new CounterDto();
+		counterDto = new CounterDto(Integer.parseInt(System.getProperty("flushMinutes", "1")));
 
 		counterDto.reload(this);
 	}

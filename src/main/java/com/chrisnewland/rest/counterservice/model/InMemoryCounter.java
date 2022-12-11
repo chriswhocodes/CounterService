@@ -6,6 +6,7 @@ import com.chrisnewland.rest.counterservice.dto.CounterDto;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,6 +42,40 @@ public class InMemoryCounter extends ConcurrentHashMap<String, IdMap>
 		}
 
 		return count;
+	}
+
+	public String getCount(String group)
+	{
+		StringBuilder builder = new StringBuilder();
+
+		IdMap idMap = get(group);
+
+		if (idMap != null)
+		{
+			for (Map.Entry<String, List<Long>> entry : idMap.entrySet())
+			{
+				String id = entry.getKey();
+
+				List<Long> entries = entry.getValue();
+
+				if (entries != null)
+				{
+					clean(group, id, entries);
+
+					if (!entries.isEmpty())
+					{
+						builder.append(id).append('=').append(entries.size()).append(',');
+					}
+				}
+			}
+
+			if (builder.length() > 0)
+			{
+				builder.deleteCharAt(builder.length() - 1);
+			}
+		}
+
+		return builder.toString();
 	}
 
 	public IdMap getIdMap(String group)

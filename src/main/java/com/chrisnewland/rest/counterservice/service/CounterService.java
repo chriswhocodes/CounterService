@@ -75,6 +75,14 @@ public class CounterService
 		return Integer.toString(IN_MEMORY_COUNTER.getCount(group, id));
 	}
 
+	@GET
+	@Path("get/{group}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String get(@PathParam("group") String group)
+	{
+		return IN_MEMORY_COUNTER.getCount(group);
+	}
+
 	@POST
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
